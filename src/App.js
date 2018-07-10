@@ -82,6 +82,15 @@ handleCheckBox = (id) => {
     })
 }
 
+// handles stars being selected and unselected
+handleStar = (id) => {
+  let star = this.state.messages.filter(messages => messages.id === id)[0]
+  star.starred ? star.starred = false : star.starred = true
+    this.setState({
+      messages: this.state.messages
+    })
+}
+
   render() {
     return (
       <div>
@@ -89,6 +98,7 @@ handleCheckBox = (id) => {
         <MessageList
           messages = { messages }
           handleCheckBox ={this.handleCheckBox}
+          handleStar={this.handleStar}
         />
       </div>
     );

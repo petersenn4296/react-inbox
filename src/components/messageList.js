@@ -16,6 +16,7 @@ class MessageList extends Component {
             selected={message.selected}
             labels={message.labels}
             handleCheckBox={this.props.handleCheckBox}
+            handleStar={this.props.handleStar}
           />
         )}
       </div>
