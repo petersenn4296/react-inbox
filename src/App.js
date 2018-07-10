@@ -73,11 +73,10 @@ class App extends Component {
   }
 }
 
+// handles messages being selected and unselected
 handleCheckBox = (id) => {
   let message = this.state.messages.filter(messages => messages.id === id)[0]
-
   message.selected ? message.selected = false : message.selected = true
-
     this.setState({
       messages: this.state.messages
     })
