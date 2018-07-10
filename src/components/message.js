@@ -12,7 +12,7 @@ class Message extends Component {
               <input type="checkbox" defaultChecked={`${this.props.selected ? "checked" : ""}`} onChange={()=>this.props.handleCheckBox(this.props.id)}/>
             </div>
             <div className="col-xs-2">
-              <i className={`star fa fa-star-o`}></i>
+              <i className={`${this.props.starred ? "star fa fa-star" : "star fa fa-star-o"}`}></i>
             </div>
           </div>
         </div>
