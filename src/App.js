@@ -85,6 +85,13 @@ isUnread = () => {
     return unreadCount.length
 }
 
+// isSelected = () => {
+//   let selectedMessages = this.state.messages
+//     .filter(message => message.selected === true)
+//     console.log(selectedMessages);
+//   return selectedMessages
+// }
+
 // handles messages being selected and unselected
 handleCheckBox = (id) => {
   let message = this.state.messages.filter(messages => messages.id === id)[0]
@@ -140,12 +147,22 @@ deleteMessage = () => {
     })
 }
 
-addLabel = () => {
-  console.log("made it in the add label");
+addLabel = (labelName) => {
+  this.state.messages
+    .filter(message => message.selected === true && !message.labels.includes(labelName))
+    .forEach(message => message.labels.push(labelName))
+    this.setState({
+      messages: this.state.messages
+    })
 }
 
-removeLabel = () => {
-  console.log("made it in the remove label");
+removeLabel = (labelName) => {
+  this.state.messages
+    .filter(message => message.selected === true)
+    .forEach(message => message.labels.splice(labelName, 1))
+    this.setState({
+      messages: this.state.messages
+    })
 }
 
   render() {
@@ -159,6 +176,7 @@ removeLabel = () => {
           addLabel={this.addLabel}
           removeLabel={this.removeLabel}
           isUnread={this.isUnread}
+          isSelected={this.isSelected}
         />
         <MessageList
           messages = { this.state.messages }
