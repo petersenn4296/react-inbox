@@ -128,7 +128,12 @@ markRead = (trueOrFalse) => {
 }
 
 deleteMessage = () => {
-  console.log("made it in the delete message");
+  console.log(this.state.messages);
+  let noDelete =this.state.messages
+    .filter(message => message.selected !== true)
+    this.setState({
+      messages: noDelete
+    })
 }
 
 addLabel = () => {
