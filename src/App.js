@@ -91,10 +91,42 @@ handleStar = (id) => {
     })
 }
 
+
+handleBulkSelect = () => {
+  console.log("made it in the bulk select");
+}
+
+markRead = () => {
+  console.log("made it in the mark read");
+}
+
+markUnread = () => {
+  console.log("made it in the mark unread");
+}
+
+deleteMessage = () => {
+  console.log("made it in the delete message");
+}
+
+addLabel = () => {
+  console.log("made it in the add label");
+}
+
+removeLabel = () => {
+  console.log("made it in the remove label");
+}
+
   render() {
     return (
       <div>
-        <Toolbar/>
+        <Toolbar
+          handleBulkSelect={this.handleBulkSelect}
+          markRead={this.markRead}
+          markUnead={this.markUnread}
+          deleteMessage={this.deleteMessage}
+          addLabel={this.addLabel}
+          removeLabel={this.removeLabel}
+        />
         <MessageList
           messages = { messages }
           handleCheckBox ={this.handleCheckBox}
