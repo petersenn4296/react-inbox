@@ -79,6 +79,12 @@ class App extends Component {
   }
 }
 
+isUnread = () => {
+  let unreadCount = this.state.messages
+    .filter(message => message.read === false)
+    return unreadCount.length
+}
+
 // handles messages being selected and unselected
 handleCheckBox = (id) => {
   let message = this.state.messages.filter(messages => messages.id === id)[0]
@@ -99,8 +105,6 @@ handleStar = (id) => {
 
 
 handleBulkSelect = () => {
-  console.log(this.state.allSelected);
-  console.log(this.state.messages);
   if(this.state.allSelected === false) {
     this.state.messages
       .forEach(message => message.selected = true)
@@ -128,11 +132,11 @@ markRead = (trueOrFalse) => {
 }
 
 deleteMessage = () => {
-  console.log(this.state.messages);
   let noDelete =this.state.messages
     .filter(message => message.selected !== true)
     this.setState({
-      messages: noDelete
+      messages: noDelete,
+      allSelected: false
     })
 }
 
@@ -154,6 +158,7 @@ removeLabel = () => {
           deleteMessage={this.deleteMessage}
           addLabel={this.addLabel}
           removeLabel={this.removeLabel}
+          isUnread={this.isUnread}
         />
         <MessageList
           messages = { this.state.messages }
