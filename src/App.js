@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Message from './components/message.js';
 import MessageList from './components/messageList.js';
 import Toolbar from './components/toolbar.js';
 import './App.css';
@@ -10,6 +9,7 @@ const messages = [
     "subject": "You can't input the protocol without calculating the mobile RSS protocol!",
     "read": false,
     "starred": true,
+    "selected": false,
     "labels": ["dev", "personal"]
   },
   {
@@ -25,6 +25,7 @@ const messages = [
     "subject": "Use the 1080p HTTP feed, then you can parse the cross-platform hard drive!",
     "read": false,
     "starred": true,
+    "selected": false,
     "labels": ["dev"]
   },
   {
@@ -40,6 +41,7 @@ const messages = [
     "subject": "If we override the interface, we can get to the HTTP feed through the virtual EXE interface!",
     "read": false,
     "starred": false,
+    "selected": false,
     "labels": ["personal"]
   },
   {
@@ -47,6 +49,7 @@ const messages = [
     "subject": "We need to back up the wireless GB driver!",
     "read": true,
     "starred": true,
+    "selected": false,
     "labels": []
   },
   {
@@ -54,6 +57,7 @@ const messages = [
     "subject": "We need to index the mobile PCI bus!",
     "read": true,
     "starred": false,
+    "selected": false,
     "labels": ["dev", "personal"]
   },
   {
@@ -61,6 +65,7 @@ const messages = [
     "subject": "If we connect the sensor, we can get to the HDD port through the redundant IB firewall!",
     "read": true,
     "starred": true,
+    "selected": false,
     "labels": []
   }
 ]
@@ -69,7 +74,8 @@ class App extends Component {
   constructor(props) {
   super(props)
   this.state = {
-    messages: messages
+    messages: messages,
+    allSelected: false
   }
 }
 
@@ -93,15 +99,32 @@ handleStar = (id) => {
 
 
 handleBulkSelect = () => {
-  console.log("made it in the bulk select");
+  console.log(this.state.allSelected);
+  console.log(this.state.messages);
+  if(this.state.allSelected === false) {
+    this.state.messages
+      .forEach(message => message.selected = true)
+      this.setState({
+        messages: this.state.messages,
+        allSelected: true
+      })
+  } else {
+    this.state.messages
+      .forEach(message => message.selected = false)
+      this.setState({
+        messages: this.state.messages,
+        allSelected: false
+      })
+  }
 }
 
-markRead = () => {
-  console.log("made it in the mark read");
-}
-
-markUnread = () => {
-  console.log("made it in the mark unread");
+markRead = (trueOrFalse) => {
+  this.state.messages
+    .filter(message => message.selected === true)
+    .forEach(message => message.read = trueOrFalse)
+  this.setState({
+    messages: this.state.messages
+  })
 }
 
 deleteMessage = () => {
@@ -118,19 +141,20 @@ removeLabel = () => {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <Toolbar
           handleBulkSelect={this.handleBulkSelect}
           markRead={this.markRead}
-          markUnead={this.markUnread}
+          markUnread={this.markUnread}
           deleteMessage={this.deleteMessage}
           addLabel={this.addLabel}
           removeLabel={this.removeLabel}
         />
         <MessageList
-          messages = { messages }
+          messages = { this.state.messages }
           handleCheckBox ={this.handleCheckBox}
           handleStar={this.handleStar}
+
         />
       </div>
     );

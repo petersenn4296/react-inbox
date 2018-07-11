@@ -5,11 +5,11 @@ class Message extends Component {
 
   render() {
     return (
-      <div className={`row message ${this.props.read ? "read" : "unread"} ${this.props.selected ? "selected" : "unselected"}`}>
+      <div className={`row message ${this.props.read ? 'read' : 'unread'} ${this.props.selected ? "selected" : "unselected"}`}>
         <div className="col-xs-1">
           <div className="row">
             <div className="col-xs-2">
-              <input type="checkbox" defaultChecked={`${this.props.selected ? "checked" : ""}`} onChange={()=>this.props.handleCheckBox(this.props.id)}/>
+              <input type="checkbox" checked={`${this.props.selected ? "checked" : ""}`} onChange={()=>this.props.handleCheckBox(this.props.id)}/>
             </div>
             <div className="col-xs-2">
               <i className={`${this.props.starred ? "star fa fa-star" : "star fa fa-star-o"}`} onClick={()=>this.props.handleStar(this.props.id)}></i>
