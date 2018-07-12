@@ -88,13 +88,6 @@ isUnread = () => {
   return unreadCount.length
 }
 
-// isSelected = () => {
-//   let selectedMessages = this.state.messages
-//     .filter(message => message.selected === true)
-//     console.log(selectedMessages);
-//   return selectedMessages
-// }
-
 selectAllButton = () => {
   let square = `fa fa-minus-square-o`
   let selected = this.state.messages
@@ -206,7 +199,6 @@ removeLabel = (labelName) => {
           messages = { this.state.messages }
           handleCheckBox ={this.handleCheckBox}
           handleStar={this.handleStar}
-
         />
       </div>
     );

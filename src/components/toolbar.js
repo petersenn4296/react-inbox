@@ -3,10 +3,6 @@ import '../App.css';
 
 class Toolbar extends Component {
   render() {
-    // square = () => {
-    //   let square = `fa fa-square-o`
-    //
-    // }
     return (<div className="row toolbar">
       <div className="col-md-12">
         <p className="pull-right count">
