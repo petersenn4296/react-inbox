@@ -3,15 +3,19 @@ import '../App.css';
 
 class Toolbar extends Component {
   render() {
+    // square = () => {
+    //   let square = `fa fa-square-o`
+    //
+    // }
     return (<div className="row toolbar">
       <div className="col-md-12">
-        <p className="pull-right">
-          <span className="badge badge">{this.props.isUnread()}</span>
-          unread messages
+        <p className="pull-right count">
+          <span className="badge">{this.props.isUnread()}</span>
+          unread message{this.props.isUnread() !== 1 ? 's' : ''}
         </p>
 
         <button className="btn btn-default" onClick={() => this.props.handleBulkSelect(this.props.selected)}>
-          <i className={`fa fa-minus-square-o ${this.props.allSelected ? "fa fa-check-square-o" : "fa fa-square-o"}`}></i>
+          <i className={`${this.props.selectAllButton()}`}></i>
         </button>
 
         <button className="btn btn-default" onClick={() => this.props.markRead(true)}>

@@ -79,10 +79,13 @@ class App extends Component {
   }
 }
 
+
+
+///////////////////////////////////////DRY Functions/////////////////////////////////////////
 isUnread = () => {
   let unreadCount = this.state.messages
     .filter(message => message.read === false)
-    return unreadCount.length
+  return unreadCount.length
 }
 
 // isSelected = () => {
@@ -92,22 +95,40 @@ isUnread = () => {
 //   return selectedMessages
 // }
 
-// handles messages being selected and unselected
+selectAllButton = () => {
+  let square = `fa fa-minus-square-o`
+  let selected = this.state.messages
+    .filter(message => message.selected === true)
+ if(selected.length === this.state.messages.length) {
+    return "fa fa-check-square-o"
+  } else if (selected.length === 0) {
+    return "fa fa-square-o"
+  }
+  return square
+}
+////////////////////////////////////////DRY Functions////////////////////////////////////////
+
+
+
+
+
+/////////////////////////////////////////Event Handlers///////////////////////////////////////
+
 handleCheckBox = (id) => {
   let message = this.state.messages.filter(messages => messages.id === id)[0]
   message.selected ? message.selected = false : message.selected = true
-    this.setState({
-      messages: this.state.messages
-    })
+  this.setState({
+    messages: this.state.messages
+  })
 }
 
-// handles stars being selected and unselected
+
 handleStar = (id) => {
   let star = this.state.messages.filter(messages => messages.id === id)[0]
   star.starred ? star.starred = false : star.starred = true
-    this.setState({
-      messages: this.state.messages
-    })
+  this.setState({
+    messages: this.state.messages
+  })
 }
 
 
@@ -115,17 +136,17 @@ handleBulkSelect = () => {
   if(this.state.allSelected === false) {
     this.state.messages
       .forEach(message => message.selected = true)
-      this.setState({
-        messages: this.state.messages,
-        allSelected: true
-      })
+    this.setState({
+      messages: this.state.messages,
+      allSelected: true
+    })
   } else {
     this.state.messages
       .forEach(message => message.selected = false)
-      this.setState({
-        messages: this.state.messages,
-        allSelected: false
-      })
+    this.setState({
+      messages: this.state.messages,
+      allSelected: false
+    })
   }
 }
 
@@ -141,10 +162,10 @@ markRead = (trueOrFalse) => {
 deleteMessage = () => {
   let noDelete =this.state.messages
     .filter(message => message.selected !== true)
-    this.setState({
-      messages: noDelete,
-      allSelected: false
-    })
+  this.setState({
+    messages: noDelete,
+    allSelected: false
+  })
 }
 
 addLabel = (labelName) => {
@@ -164,6 +185,8 @@ removeLabel = (labelName) => {
       messages: this.state.messages
     })
 }
+////////////////////////////////////////Event Handlers////////////////////////////////////////
+
 
   render() {
     return (
@@ -177,6 +200,7 @@ removeLabel = (labelName) => {
           removeLabel={this.removeLabel}
           isUnread={this.isUnread}
           isSelected={this.isSelected}
+          selectAllButton={this.selectAllButton}
         />
         <MessageList
           messages = { this.state.messages }
