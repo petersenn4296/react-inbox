@@ -3,83 +3,23 @@ import MessageList from './components/messageList.js';
 import Toolbar from './components/toolbar.js';
 import './App.css';
 
-const messages = [
-  {
-    "id": 1,
-    "subject": "You can't input the protocol without calculating the mobile RSS protocol!",
-    "read": false,
-    "starred": true,
-    "selected": false,
-    "labels": ["dev", "personal"]
-  },
-  {
-    "id": 2,
-    "subject": "connecting the system won't do anything, we need to input the mobile AI panel!",
-    "read": false,
-    "starred": false,
-    "selected": true,
-    "labels": []
-  },
-  {
-    "id": 3,
-    "subject": "Use the 1080p HTTP feed, then you can parse the cross-platform hard drive!",
-    "read": false,
-    "starred": true,
-    "selected": false,
-    "labels": ["dev"]
-  },
-  {
-    "id": 4,
-    "subject": "We need to program the primary TCP hard drive!",
-    "read": true,
-    "starred": false,
-    "selected": true,
-    "labels": []
-  },
-  {
-    "id": 5,
-    "subject": "If we override the interface, we can get to the HTTP feed through the virtual EXE interface!",
-    "read": false,
-    "starred": false,
-    "selected": false,
-    "labels": ["personal"]
-  },
-  {
-    "id": 6,
-    "subject": "We need to back up the wireless GB driver!",
-    "read": true,
-    "starred": true,
-    "selected": false,
-    "labels": []
-  },
-  {
-    "id": 7,
-    "subject": "We need to index the mobile PCI bus!",
-    "read": true,
-    "starred": false,
-    "selected": false,
-    "labels": ["dev", "personal"]
-  },
-  {
-    "id": 8,
-    "subject": "If we connect the sensor, we can get to the HDD port through the redundant IB firewall!",
-    "read": true,
-    "starred": true,
-    "selected": false,
-    "labels": []
-  }
-]
-
 class App extends Component {
   constructor(props) {
   super(props)
   this.state = {
-    messages: messages,
+    messages: [],
     allSelected: false
   }
 }
 
-
+async componentDidMount() {
+  const response = await fetch('http://localhost:8082/api/messages')
+  const json = await response.json()
+  this.setState({
+    messages: json,
+    allSelected: false
+  })
+}
 
 ///////////////////////////////////////DRY Functions/////////////////////////////////////////
 isUnread = () => {
@@ -100,7 +40,23 @@ selectAllButton = () => {
   return square
 }
 ////////////////////////////////////////DRY Functions////////////////////////////////////////
-
+patchBlock = async (id, command, prop, value) => {
+  let item = {
+    messageIds: id,
+    command: command,
+    [prop]: value
+  }
+  const response = await fetch('http://localhost:8082/api/messages', {
+  method: 'PATCH',
+  body: JSON.stringify(item),
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    }
+  })
+const message = await response.json()
+this.setState({messages: message})
+}
 
 
 
@@ -109,75 +65,90 @@ selectAllButton = () => {
 
 handleCheckBox = (id) => {
   let message = this.state.messages.filter(messages => messages.id === id)[0]
-  message.selected ? message.selected = false : message.selected = true
+  let isSelected = message.selected ? message.selected = false : message.selected = true
   this.setState({
-    messages: this.state.messages
+    allSelected: isSelected
   })
+  this.patchBlock([id], "selected", "selected", isSelected)
 }
 
 
-handleStar = (id) => {
+
+
+handleStar = async (id) => {
   let star = this.state.messages.filter(messages => messages.id === id)[0]
-  star.starred ? star.starred = false : star.starred = true
-  this.setState({
-    messages: this.state.messages
-  })
+  let isStarred = star.starred ? star.starred = false : star.starred = true
+  this.patchBlock([id], "star", "starred", isStarred)
 }
+
+
 
 
 handleBulkSelect = () => {
-  if(this.state.allSelected === false) {
+  let select = this.state.allSelected ? false : true
+  let messageId = this.state.messages
+    .filter(message => message.selected !== select)
+    .map(message => message.id)
+  this.setState({allSelected: select})
+  this.patchBlock(messageId, "selected", "selected", select)
+}
+
+
+
+
+markRead = async (trueOrFalse) => {
+
+  let messageId = this.state.messages
+    .filter(message => message.selected)
+    .map(message => message.id)
+
+  let isRead = this.state.messages
+    .filter(message => message.selected === true)
+    .forEach(message => message.read = trueOrFalse)
+
+  this.patchBlock(messageId, "read", "read", trueOrFalse)
+}
+
+
+
+
+deleteMessage = () => {
+  let messageId = this.state.messages
+    .filter(message => message.selected)
+    .map(message => message.id)
+  let noDelete = this.state.messages
+    .filter(message => message.selected !== true)
+  this.setState({  allSelected: false })
+  this.patchBlock(messageId, "delete")
+}
+
+
+
+
+label = (applyOrRemove, label) => {
+  if(applyOrRemove === "apply") {
+    console.log(applyOrRemove);
     this.state.messages
-      .forEach(message => message.selected = true)
-    this.setState({
-      messages: this.state.messages,
-      allSelected: true
-    })
+      .filter(message => message.selected === true && !message.labels.includes(label))
+      .forEach(message => message.labels.push(label))
+      let messageId = this.state.messages
+        .filter(message => message.selected)
+        .map(message => message.id)
+      this.patchBlock(messageId, "addLabel", "label", label )
   } else {
     this.state.messages
-      .forEach(message => message.selected = false)
-    this.setState({
-      messages: this.state.messages,
-      allSelected: false
-    })
+      .filter(message => message.selected === true)
+      .forEach(message => message.labels.splice(label, 1))
+      let messageId = this.state.messages
+        .filter(message => message.selected)
+        .map(message => message.id)
+      this.patchBlock(messageId, "removeLabel", "label", label)
   }
 }
 
-markRead = (trueOrFalse) => {
-  this.state.messages
-    .filter(message => message.selected === true)
-    .forEach(message => message.read = trueOrFalse)
-  this.setState({
-    messages: this.state.messages
-  })
-}
 
-deleteMessage = () => {
-  let noDelete =this.state.messages
-    .filter(message => message.selected !== true)
-  this.setState({
-    messages: noDelete,
-    allSelected: false
-  })
-}
 
-addLabel = (labelName) => {
-  this.state.messages
-    .filter(message => message.selected === true && !message.labels.includes(labelName))
-    .forEach(message => message.labels.push(labelName))
-    this.setState({
-      messages: this.state.messages
-    })
-}
 
-removeLabel = (labelName) => {
-  this.state.messages
-    .filter(message => message.selected === true)
-    .forEach(message => message.labels.splice(labelName, 1))
-    this.setState({
-      messages: this.state.messages
-    })
-}
 ////////////////////////////////////////Event Handlers////////////////////////////////////////
 
 
@@ -189,8 +160,7 @@ removeLabel = (labelName) => {
           markRead={this.markRead}
           markUnread={this.markUnread}
           deleteMessage={this.deleteMessage}
-          addLabel={this.addLabel}
-          removeLabel={this.removeLabel}
+          label={this.label}
           isUnread={this.isUnread}
           isSelected={this.isSelected}
           selectAllButton={this.selectAllButton}

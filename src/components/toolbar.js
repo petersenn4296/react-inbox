@@ -22,14 +22,14 @@ class Toolbar extends Component {
           Mark As Unread
         </button>
 
-        <select className="form-control label-select" onChange={(e) => this.props.addLabel(e.target.value)}>
+        <select className="form-control label-select" onChange={(e) => this.props.label("apply", e.target.value)}>
           <option>Apply label</option>
           <option value="dev">dev</option>
           <option value="personal">personal</option>
           <option value="gschool">gschool</option>
         </select>
 
-        <select className="form-control label-select" onChange={(e) => this.props.removeLabel(e.target.value)}>
+        <select className="form-control label-select" onChange={(e) => this.props.label("remove", e.target.value)}>
           <option>Remove label</option>
           <option value="dev">dev</option>
           <option value="personal">personal</option>
