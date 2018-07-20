@@ -13,7 +13,7 @@ class App extends Component {
 }
 
 async componentDidMount() {
-  const response = await fetch('http://localhost:8082/api/messages')
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`)
   const json = await response.json()
   this.setState({
     messages: json,
@@ -46,7 +46,7 @@ patchBlock = async (id, command, prop, value) => {
     command: command,
     [prop]: value
   }
-  const response = await fetch('http://localhost:8082/api/messages', {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
   method: 'PATCH',
   body: JSON.stringify(item),
   headers: {
